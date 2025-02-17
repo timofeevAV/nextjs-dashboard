@@ -9,6 +9,9 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
+import { UpdateInvoice } from './buttons';
+import { updateInvoice, State } from '@/app/lib/actions';
+import { useActionState } from 'react';
 
 export default function EditInvoiceForm({
   invoice,
@@ -17,12 +20,19 @@ export default function EditInvoiceForm({
   invoice: InvoiceForm;
   customers: CustomerField[];
 }) {
+  const initialState: State = { message: null, errors: {} };
+  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
+  const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+
   return (
-    <form>
+    <form action={formAction}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
-          <label htmlFor="customer" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="customer"
+            className="mb-2 block text-sm font-medium"
+          >
             Choose customer
           </label>
           <div className="relative">
@@ -32,11 +42,17 @@ export default function EditInvoiceForm({
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               defaultValue={invoice.customer_id}
             >
-              <option value="" disabled>
+              <option
+                value=""
+                disabled
+              >
                 Select a customer
               </option>
               {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
+                <option
+                  key={customer.id}
+                  value={customer.id}
+                >
                   {customer.name}
                 </option>
               ))}
@@ -47,7 +63,10 @@ export default function EditInvoiceForm({
 
         {/* Invoice Amount */}
         <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+          <label
+            htmlFor="amount"
+            className="mb-2 block text-sm font-medium"
+          >
             Choose an amount
           </label>
           <div className="relative mt-2 rounded-md">
